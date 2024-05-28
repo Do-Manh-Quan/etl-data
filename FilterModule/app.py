@@ -43,7 +43,6 @@ def  checkSameTopic(document, matching_documents):
     str_document = json_util.dumps(document)
     str_mathching_documents = json_util.dumps(matching_documents)
     prompt = f"Sản phẩm có chi tiết như sau {str_document} có tương đồng với bất kì sản phẩm nào trong danh sách sản phẩm {str_mathching_documents}. Nếu có tương đồng bạn chỉ cần trả lời là 1, nếu không bạn chỉ cần trả lời là 0."
-
     response = askGemini(prompt)
     if response.text.strip() == "1":
         return 1 #trùng nhau
@@ -71,7 +70,7 @@ def checkIsExistTopic(document):
         keywords_condition = {"keywords": {"$regex": regex_pattern, "$options": "i"}}
 
         # Tạo điều kiện tìm kiếm cho trường isCheck
-        is_check_condition = {"isCheck": "False"}
+        is_check_condition = {"isCheck": "True"}
 
          # Kết hợp cả hai điều kiện với phép AND
         query = {"$and": [keywords_condition, is_check_condition]}
@@ -96,7 +95,6 @@ def handleFilter(documents):
                records_to_update_status.append(ObjectId(document['_id'])) # Danh sách ben ghi không bị trùng nên cập nhật trạng thái
                 
     if records_to_remove:
-        print(records_to_remove)
         collection.delete_many({"_id": {"$in": records_to_remove}})
     if records_to_update_status:
         collection.update_many({"_id": {"$in": records_to_update_status}}, {"$set": {"isCheck": "True"}})
