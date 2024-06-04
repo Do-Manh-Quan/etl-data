@@ -8,7 +8,7 @@ from bson import ObjectId
 from typing import Any, Union
 from server.crawler.model import Status, Type
 from datetime import datetime
-from server.FilterModule.app import getDocumentsNotFilter, handleFilter
+
 router = APIRouter()
 collection = database.crawler 
 import asyncio
@@ -66,15 +66,8 @@ async def start_crawler(background_tasks: BackgroundTasks, is_auto_trigger: bool
     else:
         latest_queue_crawler = None
     if not latest_queue_crawler:
-        page_number = 0 
-        page_size = 10 
-        productsNotFilter = getDocumentsNotFilter(page_number, page_size)
-        handleFilter(productsNotFilter)
-        while len(productsNotFilter) == page_size:
-            productsNotFilter = getDocumentsNotFilter(page_number, page_size)
-            handleFilter(productsNotFilter)
         if is_auto_trigger:
-            return
+            return  # Stop if there's no crawler and this is an auto trigger
         raise HTTPException(status_code=404, detail="Crawler not found.")
 
     await collection.update_one(
