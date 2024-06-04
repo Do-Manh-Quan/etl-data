@@ -169,16 +169,15 @@ def handleFilter(documents):
     if recordIDs_to_remove:
         collection.delete_many({"_id": {"$in": recordIDs_to_remove}})
 
-page_number = 0 
-page_size = 10 
-productsNotFilter = getDocumentsNotFilter(page_number, page_size)
-handleFilter(productsNotFilter)
-while len(productsNotFilter) == page_size:
-    productsNotFilter = getDocumentsNotFilter(page_number, page_size)
-    handleFilter(productsNotFilter)
+# page_number = 0 
+# page_size = 10 
+# productsNotFilter = getDocumentsNotFilter(page_number, page_size)
+# handleFilter(productsNotFilter)
+# while len(productsNotFilter) == page_size:
+#     productsNotFilter = getDocumentsNotFilter(page_number, page_size)
+#     handleFilter(productsNotFilter)
 
-# Đóng kết nối (tùy chọn, PyMongo sẽ tự động quản lý kết nối)
-client.close()
+# client.close()
 
 
 
