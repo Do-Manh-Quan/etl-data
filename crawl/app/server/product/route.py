@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Body, HTTPException
+from fastapi import APIRouter, Body, HTTPException, Query
 from server.product.model import AliexpressProductSchema
 from server.database import database
 from bson import ObjectId
@@ -49,3 +49,40 @@ async def delete_product_data(id: str):
     if deleted_product.deleted_count == 1:
         return {"message": "Product with id: {} deleted successfully".format(id)}
     raise HTTPException(status_code=404, detail="Product not found")
+
+@router.get("/search/", response_description="Search products by title", status_code=200)
+async def search_products_by_title(title: str = Query(..., description="The title of the product to search for")):
+    query = {"title": {"$regex": title, "$options": "i"}}
+    products = []
+    async for product in collection.find(query):
+        products.append(convert_to_json_compatible(product))
+    return {"products": products}
+
+@router.get("/statistics/url", response_description="Get product statistics by URL", status_code=200)
+async def get_product_statistics_by_url():
+    pipeline = [
+        {
+            "$group": {
+                "_id": {
+                    "$let": {
+                        "vars": {"rootUrl": {"$substr": [{"$arrayElemAt": [{"$split": ["$url", "/"]}, 2]}, 0, -1]}},
+                        "in": "$$rootUrl"
+                    }
+                },
+                "count": {"$sum": 1}
+            }
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "root": "$_id",
+                "count": 1
+            }
+        }
+    ]
+    
+    cursor = collection.aggregate(pipeline)
+    statistics = []
+    async for document in cursor:
+        statistics.append(convert_to_json_compatible(document))
+    return {"statistics": statistics}

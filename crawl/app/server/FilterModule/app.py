@@ -9,7 +9,7 @@ import sys
 import codecs
 
 # Thiết lập bộ mã hóa cho stdout
-sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+# sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 # URI kết nối SRV (thay thế <username>, <password>, và <cluster-url> bằng thông tin của bạn)
 uri = "mongodb+srv://quanchopper1234:1234@cluster0.xyyijmh.mongodb.net?retryWrites=true&w=majority"
 
@@ -64,7 +64,7 @@ def getDocumentsNotFilter(page_number, page_size):
     # Tính toán số lượng bản ghi cần bỏ qua
     skip_records = page_number * page_size
     # Truy vấn các bản ghi khớp với điều kiện và áp dụng phân trang
-    documents = collection.find().skip(skip_records).limit(page_size) # Danh sách bản ghi chưa xử lý lọc trùng
+    documents = collection.find(query).skip(skip_records).limit(page_size) # Danh sách bản ghi chưa xử lý lọc trùng
     return list(documents)
 
 def  handleCheckSameTopic(document, matching_documents):
@@ -168,14 +168,15 @@ def handleFilter(documents):
                     collection.update_one({"_id": ObjectId(document['_id'])}, {"$set": {"isCheck": True, KEYWORDS: response.get(KEYWORDS)}})
     if recordIDs_to_remove:
         collection.delete_many({"_id": {"$in": recordIDs_to_remove}})
-
-# page_number = 0 
-# page_size = 10 
-# productsNotFilter = getDocumentsNotFilter(page_number, page_size)
-# handleFilter(productsNotFilter)
-# while len(productsNotFilter) == page_size:
-#     productsNotFilter = getDocumentsNotFilter(page_number, page_size)
-#     handleFilter(productsNotFilter)
+def fillterData():
+    page_number = 0 
+    page_size = 10 
+    productsNotFilter = getDocumentsNotFilter(page_number, page_size)
+    print(len(productsNotFilter))
+    handleFilter(productsNotFilter)
+    while len(productsNotFilter) == page_size:
+        productsNotFilter = getDocumentsNotFilter(page_number, page_size)
+        handleFilter(productsNotFilter)
 
 # client.close()
 

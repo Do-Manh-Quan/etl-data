@@ -53,9 +53,9 @@ const Crawler = () => {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button type='primary' onClick={() => {
+                    {/* <Button type='primary' onClick={() => {
 
-                    }}>Start</Button>
+                    }}>Start</Button> */}
                     <Button type='primary' danger onClick={() => {
                         deleteRequest('/crawler/' + record._id)
                             .then(() => setReload(prev => !prev))

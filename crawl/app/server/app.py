@@ -2,7 +2,6 @@ from fastapi import FastAPI
 
 from server.product.route import router as ProductRouter
 from server.crawler.route import router as CrawlerRouter
-
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()

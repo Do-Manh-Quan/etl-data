@@ -20,7 +20,7 @@ function App() {
               );
             })}
           </Route>{" "}
-          <Route path="/" element={<PublicLayout />}>
+          <Route path="/">
             {PUBLIC_ROUTER_Detail.map((item) => {
               return (
                 <Route
@@ -33,6 +33,8 @@ function App() {
             })}
           </Route>{" "}
           <Route path="*" element={<NotFound />} />
+          {/* <Route path="productBasic" element={<ProductBasic />} /> */}
+
         </Routes>
       </BrowserRouter>
   );

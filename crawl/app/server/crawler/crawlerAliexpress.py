@@ -7,7 +7,7 @@ async def crawl_aliexpress_store(url):
     user_agent = ua.random
 
     async with async_playwright() as pw:
-        browser = await pw.chromium.launch(headless=False)
+        browser = await pw.chromium.launch(headless=True)
         context = await browser.new_context(user_agent=user_agent, geolocation={"longitude": -95.7129, "latitude": 37.0902},viewport={"width": 375, "height": 667},
             device_scale_factor=2,
             is_mobile=True,

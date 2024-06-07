@@ -57,13 +57,13 @@ prompt = ChatPromptTemplate.from_messages(
             """
             "matches the given schema: ```json\n{schema}\n```. thiếu trường price và des thì tự điền vào cho phù hợp"
             "Make sure to wrap the answer in ```json and ``` tags"
-            "Trong trang web là một object sản phẩm hãy lấy các thông tin title, images, price, sku, reviews, des nếu không có sản phẩm hãy trả về mảng rỗng"
+            "Đây là text tách từ html của trang web một sản phẩm hãy lấy các thông tin title, images, price, sku, reviews, des nếu không có sản phẩm hãy trả về mảng rỗng"
         ),
         ("human", "{query}"),
     ]
 ).partial(schema=[{
     "title": "type is string không được chứa dấu ''",
-    "price": "giá của sản phẩm",
+    "price": "giá của sản phẩm, trường này bắt buộc phải có",
     "images": "mảng chứa danh sách string url hình ảnh của sản phẩm, nếu url hình ảnh chưa có https ở đầu thì hãy thêm URL Page vào đầu",
     "sku": "sku của sản phẩm có cấu trúc như schema sản phẩm kiểu này type: Color item: gồm label và value",
     "reviews": "đánh giá của sản phẩm có cấu trúc như schema sản phẩm, hãy tạo ra vài reviews cho sản phẩm 5 sao nếu không có reviews cho sản phẩm này",
@@ -88,7 +88,7 @@ async def crawl_google_store(url):
     user_agent = ua.random
 
     async with async_playwright() as pw:
-        browser = await pw.chromium.launch(headless=False)
+        browser = await pw.chromium.launch(headless=True)
         context = await browser.new_context(user_agent=user_agent, geolocation={"longitude": -95.7129, "latitude": 37.0902},viewport={"width": 375, "height": 667})
         page = await context.new_page()
         await page.goto(url)
@@ -129,7 +129,7 @@ async def crawl_google_store(url):
                 pr = scrape_with_playwright(text)
                 pr = pr[0]
                 print(pr)
-                if pr.get("title"):
+                if pr.get("title") and pr.get('price'):
                     product = {
                         'title':  pr.get("title"),
                         'images':  pr.get("images"),

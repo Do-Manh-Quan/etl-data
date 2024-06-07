@@ -37,21 +37,25 @@ const ProductDeatil = () => {
                             </div>
                         ))
                     }
-                    <div className='overflow-auto border border-gray-500 p-4 rounded-lg'>
-                        <div className=' flex flex-col gap-4'>
-                            {
-                                data?.reviews?.map(dt => (
-                                    <div className='flex flex-col'>
-                                        <Rate allowHalf value={dt?.start} />
-                                        <div>
-                                            <Tag>{dt?.sku}</Tag>
+                    {
+                        data?.reviews.length > 0 &&
+                        <div className='overflow-auto border border-gray-500 p-4 rounded-lg'>
+                            <div className=' flex flex-col gap-4'>
+                                {
+                                    data?.reviews?.map(dt => (
+                                        <div className='flex flex-col'>
+                                            <Rate allowHalf value={dt?.start} />
+                                            <div>
+                                                <Tag>{dt?.sku}</Tag>
+                                            </div>
+                                            <p>{dt?.review}</p>
                                         </div>
-                                        <p>{dt?.review}</p>
-                                    </div>
-                                ))
-                            }
+                                    ))
+                                }
+                            </div>
                         </div>
-                    </div>
+
+                    }
                 </div>
             </div>
             <p className='font-bold text-xl'>Des</p>
